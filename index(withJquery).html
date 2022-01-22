@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <style>
+input[type=text]  {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+input[type=text]  {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+input[type=submit] {
+  width: 100%;
+  background-color: #025c7a;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+h1{
+	text-align: center;
+	color: #a8a8a8;
+   text-shadow(1px 1px 0 rgba(white, 1));
+	}
+input[type=submit]:hover {
+  background-color: #025c7a;
+}
+
+.apisec {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+  margin: 0 auto;
+  width: 500px;
+}
+.smal{
+    color: #5e5252;
+    font-size: 12px;
+    margin-left: 12px;
+}
+</style>
+    <title>jQuery Form Example</title>
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+  <body>
+
+<h1>APIsec Free API Security assessment report</h1>
+  <div class="apisec">
+    <form class="form" method="post" id="myForm">
+        <label for="OAS"><b>OpenAPI Specification URL*</b></label>
+       <input type="text" id="openAPISpec" name="openAPISpec" placeholder="OpenAPI Specification">
+       <small class="smal">Not ready to test your API? Try this sample API:<span style="color: #025c7a">http://application.apisec.ai:8080/v2/api-docs</span> </small>
+       <br/>
+       <br/>
+       <label for="work email"><b>Email* </b></label>
+       <input type="text" id="email" name="email" placeholder="work email">	
+       <small class="smal">The penetration test report will be sent to this address</small>	
+       <input type="submit" id="btn" value="Submit">  		  
+       </form>
+   </div>
+	  <div id="json_response"></div>
+
+<script>
+$(document).ready(function(){
+	$('#btn').click(function(){
+
+		var email = $('#email').val();
+		var openAPISpec = $('#openAPISpec').val();
+		var jsonData = {'email': email , 'openAPISpec': openAPISpec};
+		event.preventDefault();
+	$.ajax({
+		url: 'http://application.apisec.ai:8881/api/v1/pentest',
+		method: 'POST',
+		contentType: 'application/json',
+		dataType: 'json',
+		data: jsonData,
+        headers: {
+        'Access-Control-Allow-Origin': '*'
+          },
+		success: function(result){
+		console.log("result", result)
+			if(result) {   // DO SOMETHING     
+               alert("The server says: " + result);
+           }	
+		console.log( "JSON Data: " + result.data['testSummary'] );
+		},
+		error: function(error){
+		if(error) {   // DO SOMETHING     
+                alert("The server says: " + error);
+            }
+		}
+	});
+	
+	})
+})
+</script>
+</body>
+</html>
