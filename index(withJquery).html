@@ -81,6 +81,17 @@ $(document).ready(function(){
 		var email = $('#email').val();
 		var openAPISpec = $('#openAPISpec').val();
 		var jsonData = {'email': email , 'openAPISpec': openAPISpec};
+		var hubspot = {"fields": [
+        {
+          "name": "email",
+          "value": email
+        },
+        {
+          "name": "api_specification_url",
+          "value": api_specification_url
+        }
+      ]
+		}
 		event.preventDefault();
 	$.ajax({
 		url: 'http://application.apisec.ai:8881/api/v1/pentest',
@@ -97,6 +108,27 @@ $(document).ready(function(){
                alert("The server says: " + result);
            }	
 		console.log( "JSON Data: " + result.data['testSummary'] );
+		},
+		error: function(error){
+		if(error) {   // DO SOMETHING     
+                alert("The server says: " + error);
+            }
+		}
+	});
+	$.ajax({
+		url: 'https://api.hsforms.com/submissions/v3/integration/submit/formID/formGuid',
+		method: 'POST',
+		contentType: 'application/json',
+		dataType: 'json',
+		data: hubspot,
+        headers: {
+        'Access-Control-Allow-Origin': '*'
+          },
+		success: function(fields){
+		console.log("result", result)
+			if(result) {   // DO SOMETHING     
+               alert("The server says: " + result);			   
+           }	
 		},
 		error: function(error){
 		if(error) {   // DO SOMETHING     
