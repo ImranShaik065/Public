@@ -52,6 +52,14 @@ input[type=submit]:hover {
     font-size: 12px;
     margin-left: 12px;
 }
+.response{
+	margin: 0 auto;
+	text-align:center;
+}
+.error{
+	color: red;
+}
+
 </style>
     <title>jQuery Form Example</title>
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -68,11 +76,14 @@ input[type=submit]:hover {
        <br/>
        <label for="work email"><b>Email* </b></label>
        <input type="text" id="email" name="email" placeholder="work email">	
+<!--	   <span class="error" id="invalid_email">Please enter a valid email id</span> -->
        <small class="smal">The penetration test report will be sent to this address</small>	
        <input type="submit" id="btn" value="Submit">  		  
        </form>
    </div>
-	  <div id="json_response"></div>
+
+<div class="response" id="result"></div>
+
 
 <script>
 $(document).ready(function(){
@@ -80,62 +91,34 @@ $(document).ready(function(){
 
 		var email = $('#email').val();
 		var openAPISpec = $('#openAPISpec').val();
-		var jsonData = {'email': email , 'openAPISpec': openAPISpec};
-		var hubspot = {"fields": [
-        {
-          "name": "email",
-          "value": email
-        },
-        {
-          "name": "api_specification_url",
-          "value": api_specification_url
+		if(IsEmail(email)==false){
+          $('#invalid_email').show();
+          return false;
         }
-      ]
-		}
+		var jsonData = {'email': email , 'openAPISpec': openAPISpec, 'isFileUpload':false};
 		event.preventDefault();
+
 	$.ajax({
-		url: 'http://application.apisec.ai:8881/api/v1/pentest',
+		url: 'https://freepentesttool-image-4w7ghmnvva-uw.a.run.app/api/v1/pentest',
 		method: 'POST',
-		contentType: 'application/json',
 		dataType: 'json',
-		data: jsonData,
-        headers: {
-        'Access-Control-Allow-Origin': '*'
-          },
+		
+		headers: {
+				"Content-Type": "application/json"
+		},
+		data: JSON.stringify(jsonData),
 		success: function(result){
 		console.log("result", result)
-			if(result) {   // DO SOMETHING     
-               alert("The server says: " + result);
-           }	
-		console.log( "JSON Data: " + result.data['testSummary'] );
-		},
+			$('#result').html(result);	  
+		},		
 		error: function(error){
 		if(error) {   // DO SOMETHING     
                 alert("The server says: " + error);
             }
+			console.log(error)
 		}
 	});
-	$.ajax({
-		url: 'https://api.hsforms.com/submissions/v3/integration/submit/formID/formGuid',
-		method: 'POST',
-		contentType: 'application/json',
-		dataType: 'json',
-		data: hubspot,
-        headers: {
-        'Access-Control-Allow-Origin': '*'
-          },
-		success: function(fields){
-		console.log("result", result)
-			if(result) {   // DO SOMETHING     
-               alert("The server says: " + result);			   
-           }	
-		},
-		error: function(error){
-		if(error) {   // DO SOMETHING     
-                alert("The server says: " + error);
-            }
-		}
-	});
+
 	
 	})
 })
